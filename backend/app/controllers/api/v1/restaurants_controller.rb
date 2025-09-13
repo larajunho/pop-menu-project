@@ -2,7 +2,7 @@ module Api
     module V1
       class RestaurantsController < ApplicationController
         def index
-          restaurants = Restaurant.includes(menus: :menu_items)
+          restaurants = Restaurant.includes(menus: :menu_items).all
           render json: restaurants.as_json(include: { menus: { include: :menu_items } })
         end
   

@@ -7,3 +7,4 @@ class MenuItem < ApplicationRecord
   validates :price, presence: true
 end
 
+
