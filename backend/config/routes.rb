@@ -6,6 +6,7 @@ Rails.application.routes.draw do
           resources :menu_items
         end
       end
+      post "import_restaurants", to: "imports#create"
     end
   end
 end
