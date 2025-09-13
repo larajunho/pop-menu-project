@@ -1,13 +1,41 @@
 require "test_helper"
 
 class MenuItemTest < ActiveSupport::TestCase
-  test "should not save menu_item without name or price" do
-    menu = Menu.create(name: "Lunch")
-    item = MenuItem.new(menu: menu)
-    assert_not item.save
+  def setup
+    @restaurant = Restaurant.create(name: "Poppo's Cafe")
+    @menu = @restaurant.menus.create(name: "Lunch")
+    @menu_item = @menu.menu_items.build(name: "Burger", price: 9)
+  end
 
-    item.name = "Burger"
-    item.price = -5
-    assert_not item.save
+  test "should be valid with name and positive price" do
+    assert @menu_item.valid?
+  end
+
+  test "should not save without name" do
+    @menu_item.name = ""
+    assert_not @menu_item.valid?
+  end
+
+  test "should not save without price" do
+    @menu_item.price = nil
+    assert_not @menu_item.valid?
+  end
+
+  test "should not save with negative price" do
+    @menu_item.price = -5
+    assert_not @menu_item.valid?
+  end
+
+  test "name should be unique within the same menu" do
+    @menu_item.save
+    duplicate_item = @menu.menu_items.build(name: "Burger", price: 10)
+    assert_not duplicate_item.valid?
+  end
+
+  test "same name can exist in different menus of the same restaurant" do
+    @menu_item.save
+    another_menu = @restaurant.menus.create(name: "Dinner")
+    item_in_other_menu = another_menu.menu_items.build(name: "Burger", price: 15)
+    assert item_in_other_menu.valid?
   end
 end

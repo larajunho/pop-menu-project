@@ -1,8 +1,21 @@
 require "test_helper"
 
 class MenuTest < ActiveSupport::TestCase
-  test "should not save menu without name" do
-    menu = Menu.new
-    assert_not menu.save
+  def setup
+    @restaurant = Restaurant.create(name: "Poppo's Cafe")
+    @menu = @restaurant.menus.build(name: "Lunch")
+  end
+
+  test "should be valid" do
+    assert @menu.valid?
+  end
+
+  test "name should be present" do
+    @menu.name = ""
+    assert_not @menu.valid?
+  end
+
+  test "should belong to restaurant" do
+    assert_equal @restaurant, @menu.restaurant
   end
 end
