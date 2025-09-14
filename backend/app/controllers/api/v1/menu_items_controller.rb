@@ -6,12 +6,15 @@ module Api
       before_action :set_menu
 
       def index
-        render json: @menu.menu_items
+        items = @menu.menu_assignments.includes(:menu_item).map do |ma|
+          { id: ma.menu_item.id, name: ma.menu_item.name, price: ma.price }
+        end
+        render json: items
       end
 
       def show
-        item = @menu.menu_items.find(params[:id])
-        render json: item
+        item = @menu.menu_assignments.includes(:menu_item).find_by!(menu_item_id: params[:id])
+        render json: { id: item.menu_item.id, name: item.menu_item.name, price: item.price }
       end
 
       private

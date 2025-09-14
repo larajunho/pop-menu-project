@@ -10,12 +10,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_13_045343) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_14_001000) do
   create_table "menu_assignments", force: :cascade do |t|
     t.integer "menu_id", null: false
     t.integer "menu_item_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.decimal "price"
     t.index ["menu_id", "menu_item_id"], name: "index_menu_assignments_on_menu_id_and_menu_item_id", unique: true
     t.index ["menu_id"], name: "index_menu_assignments_on_menu_id"
     t.index ["menu_item_id"], name: "index_menu_assignments_on_menu_item_id"
@@ -23,7 +24,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_13_045343) do
 
   create_table "menu_items", force: :cascade do |t|
     t.string "name"
-    t.decimal "price"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "restaurant_id", null: false

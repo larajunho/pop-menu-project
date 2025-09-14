@@ -24,20 +24,18 @@ module Api
               items = menu_data["menu_items"] || menu_data["dishes"] || []
 
               items.each do |item_data|
-                
                 item = MenuItem.find_or_create_by!(
                   name: item_data["name"],
                   restaurant: restaurant
-                ) do |mi|
-                  mi.price = item_data["price"]
-                end
+                )
 
-                
-                if menu.menu_items.exists?(item.id)
-                  logs << "  Skipped duplicate link for '#{item.name}' in menu '#{menu.name}'"
+                assignment = MenuAssignment.find_or_initialize_by(menu: menu, menu_item: item)
+                assignment.price = item_data["price"]
+
+                if assignment.save
+                  logs << "  Linked item '#{item.name}' to menu '#{menu.name}' with price #{assignment.price}"
                 else
-                  menu.menu_items << item
-                  logs << "  Linked item '#{item.name}' to menu '#{menu.name}'"
+                  logs << "  Failed to link '#{item.name}' to menu '#{menu.name}': #{assignment.errors.full_messages.join(", ")}"
                 end
               end
             end
